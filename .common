@@ -8,7 +8,7 @@ set -e
 #######################################################################################################################
 # environment variables
 
-WORKDIR=${WORKDIR:=~/mod-workdir}
+WORKDIR=${WORKDIR:=~/darkglass-linux-workdir}
 
 #######################################################################################################################
 # Colored print functions
@@ -29,18 +29,12 @@ function warn {
 #######################################################################################################################
 # check for old installation
 
-if [ -d ${WORKDIR}/build ]; then
-  info "mod-plugin-builder has been updated to support multiple platforms"
-  info "Unfortunately this requires a complete rebuild of its packages"
-  error "Please delete ${WORKDIR} and re-run bootstrap.sh"
-fi
-
 if [ -z "${PLATFORM}" ]; then
   error "Incorrect use of .common, PLATFORM not defined!"
 fi
 
 #######################################################################################################################
-# check for debug builds
+# check for custom and debug builds
 
 if [[ "${PLATFORM}" == *"-debug" ]]; then
   TOOLCHAIN_PLATFORM="$(echo ${PLATFORM} | sed 's/-debug//')"
@@ -48,83 +42,33 @@ else
   TOOLCHAIN_PLATFORM="${PLATFORM}"
 fi
 
-#######################################################################################################################
-# check for kernel builds
-
-if [[ "${PLATFORM}" == *"-kernel" ]]; then
-  BR2_BUILD_CONFIG="kernel"
-  BR2_PLATFORM="$(echo ${PLATFORM} | sed 's/-kernel//' | sed 's/-new//')"
-  TOOLCHAIN_PLATFORM="$(echo ${PLATFORM} | sed 's/-kernel//' | sed 's/-new//')-new"
-else
-  BR2_BUILD_CONFIG="plugins-dep"
-  BR2_PLATFORM="${TOOLCHAIN_PLATFORM}"
-fi
-
-#######################################################################################################################
-# check for custom and generic builds
-
 if [[ "${PLATFORM}" = "darkglass-anagram-gcc15"* ]]; then
-  TOOLCHAIN_PLATFORM="darkglass-anagram-gcc15"
+  TOOLCHAIN_PLATFORM="darkglass-cortex-a76.a55-gcc15"
   BR2_PLATFORM="${PLATFORM}"
-elif [[ "${PLATFORM}" == "generic-aarch64-"* ]] || [[ "${PLATFORM}" = "darkglass-anagram"* ]]; then
-  TOOLCHAIN_PLATFORM="generic-aarch64"
+elif [[ "${PLATFORM}" = "darkglass-anagram"* ]]; then
+  TOOLCHAIN_PLATFORM="darkglass-cortex-a76.a55-gcc9"
   BR2_PLATFORM="${PLATFORM}"
-fi
-
-#######################################################################################################################
-# check for readlink binary
-
-if [ -f "/opt/local/bin/greadlink" ]; then
-  readlink="/opt/local/bin/greadlink"
 else
-  readlink="readlink"
-fi
-
-#######################################################################################################################
-# macOS support through homebrew
-
-if [ -d "/usr/local/opt/ncurses/bin" ]; then
-  export CPPFLAGS="-I/usr/local/opt/ncurses/include -I/opt/homebrew/opt/gettext/include"
-  export LDFLAGS="-L/usr/local/opt/ncurses/lib -L/opt/homebrew/opt/gettext/lib"
-  export PATH="/usr/local/opt/ncurses/bin:${PATH}"
+  BR2_PLATFORM="${TOOLCHAIN_PLATFORM}"
 fi
 
 #######################################################################################################################
 # define buildroot and toolchain version per platform
 
 case "${TOOLCHAIN_PLATFORM}" in
-  # old targets: ct-ng 1.22 with gcc 4.9 + glibc 2.21
-  "modduo"|"modduox")
-    BUILDROOT_TAR_EXT=bz2
-    BUILDROOT_VERSION=buildroot-2016.02
-    CT_NG_VERSION=crosstool-ng-1.22.0
-  ;;
-  # intermediate targets: ct-ng 1.24 with gcc 7.5 + glibc 2.27 on dwarf or glibc 2.21 on duo/duox (static)
-  "modduo-static"|"modduox-static"|"moddwarf")
-    BUILDROOT_TAR_EXT=bz2
-    BUILDROOT_VERSION=buildroot-2016.02
-    CT_NG_VERSION=crosstool-ng-1.24.0
-  ;;
-  # new targets: ct-ng 1.25 with gcc 9 + glibc 2.27
-  "modduo-new"|"modduox-new"|"moddwarf-new")
-    BUILDROOT_VERSION=buildroot-2016.02
-    CT_NG_VERSION=crosstool-ng-1.25.0
-  ;;
-  # generic targets: ct-ng 1.25 with gcc 9 + glibc 2.34
-  "generic-aarch64"|"generic-x86_64")
-    BUILDROOT_VERSION=buildroot-2023.11.3
-    CT_NG_VERSION=crosstool-ng-1.25.0
-  ;;
-  # custom darkglass-anagram-gcc15 target: ct-ng 1.28 with gcc 15 + glibc 2.34
-  "darkglass-anagram-gcc15")
+  # GCC 15 target: ct-ng 1.28 with glibc 2.34
+  "darkglass-cortex-a76.a55-gcc15")
     BUILDROOT_VERSION=buildroot-2023.11.3
     CT_NG_VERSION=crosstool-ng-1.28.0
   ;;
+  # GCC 9 target: ct-ng 1.25 with glibc 2.34
+  "darkglass-cortex-a76.a55-gcc9")
+    BUILDROOT_VERSION=buildroot-2023.11.3
+    CT_NG_VERSION=crosstool-ng-1.25.0
+  ;;
   # fallback
   *)
-    BUILDROOT_TAR_EXT=bz2
-    BUILDROOT_VERSION=buildroot-2016.02
-    CT_NG_VERSION=crosstool-ng-1.24.0
+    error "Unknown platform"
   ;;
 esac
 
@@ -137,18 +81,12 @@ CT_NG_FILE=${CT_NG_VERSION}.tar.bz2
 #######################################################################################################################
 # buildroot variables
 
-if [ "${BUILDROOT_VERSION}" = "buildroot-2016.02" ]; then
-  BUILDROOT_TAR_EXT=bz2
-else
-  BUILDROOT_TAR_EXT=xz
-fi
-
 BUILDROOT_LINK=https://buildroot.org/downloads/
-BUILDROOT_FILE=${BUILDROOT_VERSION}.tar.${BUILDROOT_TAR_EXT}
+BUILDROOT_FILE=${BUILDROOT_VERSION}.tar.xz
 
 SOURCE_DIR="$(pwd)"
-BR2_EXTERNAL=${SOURCE_DIR}/${BR2_BUILD_CONFIG}
-BR2_MAKE="make O=${WORKDIR}/${PLATFORM} BR2_EXTERNAL=${BR2_EXTERNAL} BR2_EXTERNAL_PLUGINS_DEP=${BR2_EXTERNAL} BR2_PLATFORM=${BR2_PLATFORM}"
+BR2_EXTERNAL=${SOURCE_DIR}/plugins-dep
+BR2_MAKE="make O=${WORKDIR}/${PLATFORM} BR2_EXTERNAL=${BR2_EXTERNAL} BR2_PLATFORM=${BR2_PLATFORM}"
 BR2_TARGET=${WORKDIR}/${PLATFORM}/target
 
 #######################################################################################################################
@@ -162,10 +100,5 @@ TOOLCHAIN_BUILD_DIR=${WORKDIR}/${TOOLCHAIN_PLATFORM}/build
 mkdir -p ${BUILD_DIR}
 mkdir -p ${DOWNLOAD_DIR}
 mkdir -p ${TOOLCHAIN_DIR}
-
-if [[ "${BR2_BUILD_CONFIG}" != "kernel" ]]; then
-  PLUGINS_DIR=${WORKDIR}/${PLATFORM}/plugins
-  mkdir -p ${PLUGINS_DIR}
-fi
 
 #######################################################################################################################

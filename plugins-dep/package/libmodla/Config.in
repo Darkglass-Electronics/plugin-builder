@@ -1,5 +1,0 @@
-config BR2_PACKAGE_LIBMODLA
-	bool "libmodla"
-
-config BR2_PACKAGE_LIBMODLA_PABLITO
-	bool "libmodla for pablito"

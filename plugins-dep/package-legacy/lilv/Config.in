@@ -1,3 +1,0 @@
-config BR2_PACKAGE_LILV
-	bool "lilv"
-	select BR2_PACKAGE_SRATOM

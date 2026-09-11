@@ -1,2 +1,0 @@
-config BR2_PACKAGE_MOD_PLUGIN_BUILDER
-	bool mod-plugin-builder
