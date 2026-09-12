@@ -11,7 +11,7 @@ jobs:
   debian_12:
     strategy:
       matrix:
-        platform: [modduo, modduo-debug, modduo-new, modduo-new-debug, modduo-static, modduox, modduox-debug, modduox-static, modduox-new, modduox-new-debug, moddwarf, moddwarf-debug, moddwarf-new, moddwarf-new-debug, darkglass-anagram, generic-aarch64, generic-aarch64-debug, generic-x86_64, generic-x86_64-debug]
+        platform: [darkglass-anagram, darkglass-anagram-debug, darkglass-anagram-gcc15]
     runs-on: ubuntu-latest
     container:
       image: debian:12
@@ -34,36 +34,10 @@ jobs:
           sed -i 's/CT_LOG_PROGRESS_BAR=y/CT_LOG_PROGRESS_BAR=n/' toolchain/*.config
           ./bootstrap.sh ${{ matrix.platform }} minimal
 
-  debian_11:
-    strategy:
-      matrix:
-        platform: [modduo, modduo-debug, modduo-new, modduo-new-debug, modduo-static, modduox, modduox-debug, modduox-static, modduox-new, modduox-new-debug, moddwarf, moddwarf-debug, moddwarf-new, moddwarf-new-debug, darkglass-anagram, generic-aarch64, generic-aarch64-debug, generic-x86_64, generic-x86_64-debug]
-    runs-on: ubuntu-latest
-    container:
-      image: debian:11
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/mod-workdir/download
-          key: download-debian_11-${{ matrix.platform }}
-      - name: Install dependencies
-        run: |
-          apt-get update -qq && apt-get install -yqq \
-            acl bc curl cvs git mercurial rsync subversion wget \
-            bison bzip2 flex gawk gperf gzip help2man nano perl patch tar texinfo unzip \
-            automake binutils build-essential cpio libtool libncurses-dev pkg-config python-is-python3 libtool-bin
-      - name: Bootstrap
-        run: |
-          sed -i 's/CT_LOG_PROGRESS_BAR=y/CT_LOG_PROGRESS_BAR=n/' toolchain/*.config
-          ./bootstrap.sh ${{ matrix.platform }} minimal
-
   ubuntu_24_04:
     strategy:
       matrix:
-        platform: [modduo, modduo-debug, modduo-new, modduo-new-debug, modduo-static, modduox, modduox-debug, modduox-static, modduox-new, modduox-new-debug, moddwarf, moddwarf-debug, moddwarf-new, moddwarf-new-debug, darkglass-anagram, generic-aarch64, generic-aarch64-debug, generic-x86_64, generic-x86_64-debug]
+        platform: [darkglass-anagram, darkglass-anagram-debug, darkglass-anagram-gcc15]
     runs-on: ubuntu-latest
     container:
       image: ubuntu:24.04
@@ -95,7 +69,7 @@ jobs:
   ubuntu_22_04:
     strategy:
       matrix:
-        platform: [modduo, modduo-debug, modduo-new, modduo-new-debug, modduo-static, modduox, modduox-debug, modduox-static, modduox-new, modduox-new-debug, moddwarf, moddwarf-debug, moddwarf-new, moddwarf-new-debug, darkglass-anagram, generic-aarch64, generic-aarch64-debug, generic-x86_64, generic-x86_64-debug]
+        platform: [darkglass-anagram, darkglass-anagram-debug, darkglass-anagram-gcc15]
     runs-on: ubuntu-latest
     container:
       image: ubuntu:22.04
@@ -121,7 +95,7 @@ jobs:
   ubuntu_20_04:
     strategy:
       matrix:
-        platform: [modduo, modduo-debug, modduo-new, modduo-new-debug, modduo-static, modduox, modduox-debug, modduox-static, modduox-new, modduox-new-debug, moddwarf, moddwarf-debug, moddwarf-new, moddwarf-new-debug, darkglass-anagram, generic-aarch64, generic-aarch64-debug, generic-x86_64, generic-x86_64-debug]
+        platform: [darkglass-anagram, darkglass-anagram-debug, darkglass-anagram-gcc15]
     runs-on: ubuntu-latest
     container:
       image: ubuntu:20.04

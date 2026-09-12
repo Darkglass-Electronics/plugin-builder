@@ -19,17 +19,12 @@ else ifeq ($(BR2_TOOLCHAIN_EXTERNAL_GCC_9),y)
 LIBNICKEL_EXTRA_SUFFIX = -gcc9
 endif
 
-define LIBNICKEL_BUILD_CMDS
-	wget https://api.darkglass.com/static/libnickel/dg-license.h -O $(@D)/dg-license.h
-	wget https://api.darkglass.com/static/libnickel/libnickel.h -O $(@D)/libnickel.h
-	wget https://api.darkglass.com/static/libnickel/libnickel$(LIBNICKEL_EXTRA_SUFFIX).a -O $(@D)/libnickel$(LIBNICKEL_EXTRA_SUFFIX).a
-endef
-
 define LIBNICKEL_INSTALL_STAGING_CMDS
 	$(INSTALL) -d $(STAGING_DIR)/usr/include
 	$(INSTALL) -d $(STAGING_DIR)/usr/lib
-	$(INSTALL) -m 644 $(@D)/dg-license.h $(@D)/libnickel.h $(STAGING_DIR)/usr/include/
-	$(INSTALL) -m 644 $(@D)/libnickel$(LIBNICKEL_EXTRA_SUFFIX).a $(STAGING_DIR)/usr/lib/
+	$(INSTALL) -m 644 $($(PKG)_PKGDIR)/dg-license.h $(STAGING_DIR)/usr/include/
+	$(INSTALL) -m 644 $($(PKG)_PKGDIR)/libnickel.h $(STAGING_DIR)/usr/include/
+	$(INSTALL) -m 644 $($(PKG)_PKGDIR)/libnickel$(LIBNICKEL_EXTRA_SUFFIX).a $(STAGING_DIR)/usr/lib/
 endef
 
 $(eval $(generic-package))
