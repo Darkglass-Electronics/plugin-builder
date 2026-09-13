@@ -11,7 +11,7 @@ jobs:
   ubuntu_22_04:
     strategy:
       matrix:
-        platform: [darkglass-anagram, darkglass-anagram-debug, darkglass-anagram-gcc15]
+        platform: [darkglass-anagram, darkglass-anagram-debug, darkglass-anagram-gcc15, darkglass-anagram-gcc15-debug]
     runs-on: ubuntu-latest
     container:
       image: ubuntu:22.04
