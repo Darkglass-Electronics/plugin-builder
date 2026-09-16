@@ -13,8 +13,8 @@ LILV_DEPENDENCIES = host-pkgconf lv2 serd sord sratom
 LILV_INSTALL_STAGING = YES
 
 LILV_CONF_OPTS += \
+	-Dbindings_py=enabled \
 	-Dbindings_cpp=disabled \
-	-Dbindings_py=disabled \
 	-Ddocs=disabled \
 	-Ddynmanifest=disabled \
 	-Dhtml=disabled \
