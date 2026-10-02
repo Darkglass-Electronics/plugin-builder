@@ -4,7 +4,7 @@ plugin-builder
 This repository contains the toolchain and libraries used in Darkglass Linux-based devices.
 
 There are several dependencies:
- - gcc & g++
+ - gcc
  - git
  - subversion
  - hg/mercurial
