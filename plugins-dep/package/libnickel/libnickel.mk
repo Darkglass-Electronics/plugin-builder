@@ -4,7 +4,7 @@
 #
 ######################################
 
-LIBNICKEL_VERSION = 1
+LIBNICKEL_VERSION = 1.0.1
 LIBNICKEL_SOURCE = .
 LIBNICKEL_SITE = .
 LIBNICKEL_SITE_METHOD = file
