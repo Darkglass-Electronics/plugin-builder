@@ -35,6 +35,7 @@
 #define DARKGLASS_LICENSE__feature   DARKGLASS_LICENSE_PREFIX "feature"
 #define DARKGLASS_LICENSE__interface DARKGLASS_LICENSE_PREFIX "interface"
 #define DARKGLASS_LICENSE__uri       DARKGLASS_LICENSE_PREFIX "uri"
+#define DARKGLASS_LICENSE__version   DARKGLASS_LICENSE_PREFIX "version"
 
 #ifdef __cplusplus
 extern "C" {
