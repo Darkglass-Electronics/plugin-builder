@@ -4,7 +4,7 @@
 #
 ######################################
 
-LIBNICKEL_VERSION = 1.0.1
+LIBNICKEL_VERSION = 1.0.1b
 LIBNICKEL_SOURCE = .
 LIBNICKEL_SITE = .
 LIBNICKEL_SITE_METHOD = file
@@ -25,6 +25,7 @@ define LIBNICKEL_INSTALL_STAGING_CMDS
 	$(INSTALL) -m 644 $($(PKG)_PKGDIR)/dg-license.h $(STAGING_DIR)/usr/include/
 	$(INSTALL) -m 644 $($(PKG)_PKGDIR)/libnickel.h $(STAGING_DIR)/usr/include/
 	$(INSTALL) -m 644 $($(PKG)_PKGDIR)/libnickel$(LIBNICKEL_EXTRA_SUFFIX).a $(STAGING_DIR)/usr/lib/
+	ln -sf libnickel.a $(STAGING_DIR)/usr/lib/libnickel$(LIBNICKEL_EXTRA_SUFFIX).a
 endef
 
 $(eval $(generic-package))
