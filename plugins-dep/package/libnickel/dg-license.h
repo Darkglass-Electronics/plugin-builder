@@ -23,10 +23,10 @@
 #ifndef LV2_DARKGLASS_LICENSE_H
 #define LV2_DARKGLASS_LICENSE_H
 
-#if defined(__has_include) && __has_include("lv2/core/lv2.h")
-#include "lv2/core/lv2.h"
+#if defined(__has_include) && __has_include(<lv2/core/lv2.h>)
+#include <lv2/core/lv2.h>
 #else
-#include "lv2/lv2plug.in/ns/lv2core/lv2.h"
+#include <lv2/lv2plug.in/ns/lv2core/lv2.h>
 #endif
 
 #define DARKGLASS_LICENSE_URI    "http://www.darkglass.com/lv2/ns/lv2ext/license"
